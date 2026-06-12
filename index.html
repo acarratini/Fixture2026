@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fixture Mundial 2026 - Grupo Scout Sta. María de Iguazú Nº 751</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-title-area">
+        <div class="logo-wrapper">
+          <img src="logo-scout.jpg" alt="Logo Grupo Scout Sta. María de Iguazú Nº 751" class="scout-logo">
+        </div>
+        <div class="title-wrapper">
+          <h1>Mundial 2026</h1>
+          <p class="subtitle">Fixture Interactivo & Simulador de Resultados</p>
+          <span class="scout-badge">Grupo Scout Sta. María de Iguazú Nº 751</span>
+        </div>
+      </div>
+      
+      <!-- Control Panel inside header -->
+      <div class="header-controls">
+        <button id="btn-simulate-groups" class="btn btn-primary">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Simular Grupos
+        </button>
+        <button id="btn-simulate-knockout" class="btn btn-secondary" disabled>
+          <i class="fa-solid fa-trophy"></i> Simular Fase Final
+        </button>
+        <button id="btn-reset" class="btn btn-danger">
+          <i class="fa-solid fa-rotate-left"></i> Limpiar Todo
+        </button>
+      </div>
+    </div>
+    
+    <!-- Tab Navigation -->
+    <nav class="tab-navigation">
+      <button class="tab-btn active" data-tab="tab-groups">
+        <i class="fa-solid fa-users"></i> Fase de Grupos
+      </button>
+      <button class="tab-btn" data-tab="tab-thirds">
+        <i class="fa-solid fa-list-ol"></i> Tabla de Terceros
+        <span class="badge" id="thirds-badge">0/8</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-bracket" id="tab-btn-bracket">
+        <i class="fa-solid fa-sitemap"></i> Fase Final (Llaves)
+        <span class="bracket-locked-icon" id="bracket-lock-indicator"><i class="fa-solid fa-lock"></i></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="app-main">
+
+    <!-- Tab 1: Fase de Grupos -->
+    <section id="tab-groups" class="tab-content active">
+      <div class="section-intro">
+        <h2>Fase de Grupos</h2>
+        <p>Ingresa los resultados de los partidos para calcular automáticamente las tablas de posiciones. Haz clic en una tarjeta de grupo para ver y editar los partidos detalladamente.</p>
+      </div>
+      
+      <!-- Groups Grid -->
+      <div class="groups-grid" id="groups-grid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 2: Tabla de Terceros -->
+    <section id="tab-thirds" class="tab-content">
+      <div class="section-intro">
+        <h2>Tabla de Terceros Lugares</h2>
+        <p>Los 12 terceros lugares clasificados en sus respectivos grupos se rankean aquí en tiempo real. Los <strong>8 mejores terceros</strong> avanzarán a los Dieciseisavos de Final.</p>
+      </div>
+      
+      <div class="card table-card">
+        <div class="table-responsive">
+          <table class="thirds-table" id="thirds-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Pos</th>
+                <th style="width: 80px;">Grupo</th>
+                <th>Equipo</th>
+                <th>PJ</th>
+                <th>G</th>
+                <th>E</th>
+                <th>P</th>
+                <th>GF</th>
+                <th>GC</th>
+                <th>DG</th>
+                <th>Pts</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="thirds-table-body">
+              <!-- Rendered dynamically by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Fase Final (Llaves) -->
+    <section id="tab-bracket" class="tab-content">
+      <div class="section-intro bracket-header-intro">
+        <h2>Fase Final</h2>
+        <p id="bracket-status-text">Completa la fase de grupos para desbloquear el cuadro de eliminación directa.</p>
+      </div>
+      
+      <!-- Bracket locked warning overlay -->
+      <div class="bracket-locked-overlay" id="bracket-locked-overlay">
+        <div class="lock-card">
+          <i class="fa-solid fa-lock lock-icon"></i>
+          <h3>Fase Final Bloqueada</h3>
+          <p>Para desbloquear las llaves de Fase Final y calcular los cruces de los mejores terceros, debes ingresar los resultados de todos los partidos en la Fase de Grupos.</p>
+          <button id="btn-unlock-simulate" class="btn btn-primary btn-large">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Simular fase de grupos automáticamente
+          </button>
+        </div>
+      </div>
+
+      <!-- Bracket Tree view -->
+      <div class="bracket-wrapper" id="bracket-wrapper">
+        <div class="bracket-container" id="bracket-container">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal for Editing Group Matches -->
+  <div class="modal-overlay" id="group-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-group-title">Detalle de Grupo</h3>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Standing table in modal -->
+        <div class="modal-standing-container">
+          <h4>Tabla de Posiciones</h4>
+          <div class="table-responsive">
+            <table class="standing-table" id="modal-standing-table">
+              <thead>
+                <tr>
+                  <th>Pos</th>
+                  <th>Equipo</th>
+                  <th>PJ</th>
+                  <th>G</th>
+                  <th>E</th>
+                  <th>P</th>
+                  <th>GF</th>
+                  <th>GC</th>
+                  <th>DG</th>
+                  <th>Pts</th>
+                </tr>
+              </thead>
+              <tbody id="modal-standing-body">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Matches list in modal -->
+        <div class="modal-matches-container">
+          <h4>Partidos del Grupo</h4>
+          <div class="matches-list" id="modal-matches-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>Desarrollado con ❤️ para el <strong>Grupo Scout Sta. María de Iguazú Nº 751</strong> &copy; 2026. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>
